@@ -1,5 +1,149 @@
 # Parallel OpenAI
 
+This sample program is a tool for making parallel queries to OpenAI. It uses asynchronous processing and batch processing to efficiently handle multiple queries.
+
+## Features
+
+- Process multiple queries in parallel
+- Batch processing for efficiency
+- Cache functionality for improved performance
+- Automatic retry on errors
+- Result aggregation and management
+- Interactive mode
+
+## Requirements
+
+- Python 3.7 or higher
+- OpenAI API key
+- Required packages (listed in requirements.txt)
+
+## Installation
+
+1. Install the required packages:
+
+```bash
+pip install -r requirements.txt
+```
+
+2. Copy the `config.yaml.sample` file to `config.yaml` and configure it:
+
+```bash
+cp config.yaml.sample config.yaml
+```
+
+Edit the `config.yaml` file to set your API key and other settings:
+
+```yaml
+openai:
+  api_key: "your_api_key_here"
+  model: "gpt-4o-mini"
+
+parallel:
+  batch_size: 5
+  max_retries: 3
+  retry_delay: 1
+
+cache:
+  enabled: true
+  directory: "cache"
+  expiry_days: 7
+```
+
+## Usage
+
+### Basic Usage
+
+```bash
+# Run as a module
+python -m parallel_openai.main <command> [options]
+```
+
+### Commands
+
+#### Single Query
+
+```bash
+python -m parallel_openai.main query "What is the capital of Japan?"
+```
+
+#### Batch Queries from a File
+
+```bash
+python -m parallel_openai.main batch queries.txt
+```
+
+Each line in the `queries.txt` file will be processed as a separate query.
+
+#### Interactive Mode
+
+```bash
+python -m parallel_openai.main interactive
+```
+
+In interactive mode, you'll be prompted to enter queries, which will be processed one at a time. Type "exit" or "quit" to end the session.
+
+### Options
+
+```bash
+# Specify a model
+python -m parallel_openai.main query "Explain quantum computing" --model gpt-4o-mini
+
+# Disable cache
+python -m parallel_openai.main query "What is AI?" --no-cache
+
+# Specify batch size
+python -m parallel_openai.main batch queries.txt --batch-size 3
+
+# Specify temperature
+python -m parallel_openai.main query "Write a creative story" --temperature 0.9
+
+# Specify maximum tokens
+python -m parallel_openai.main query "Summarize this text" --max-tokens 500
+
+# Specify config file
+python -m parallel_openai.main query "Hello" --config custom_config.yaml
+
+# Combine multiple options
+python -m parallel_openai.main batch queries.txt --model gpt-4o-mini --batch-size 3 --no-cache
+```
+
+## File Structure
+
+- `__init__.py` - Package initialization file
+- `main.py` - Main entry point
+- `parallel_client.py` - Parallel processing client
+- `config.yaml.sample` - Sample configuration file
+- `requirements.txt` - List of required packages
+- `utils/` - Utility modules
+  - `__init__.py` - Utility package initialization file
+  - `cache_manager.py` - Cache management module
+  - `openai_client.py` - OpenAI client module
+
+## Cache Functionality
+
+This program caches responses to the same queries to reduce the number of API requests and improve performance. The cache has the following features:
+
+- Stores cache based on query hash values
+- Configurable expiration (default: 7 days)
+- Cache clearing functionality
+- Metadata management
+
+To disable caching, use the `--no-cache` option or set `cache.enabled` to `false` in the configuration file.
+
+## Asynchronous Processing
+
+This program implements asynchronous processing using `asyncio`. This allows multiple queries to be processed concurrently, efficiently utilizing I/O wait times.
+
+In batch processing, queries are grouped based on the specified batch size, and each batch is processed concurrently. This enables efficient processing of a large number of queries.
+
+## Error Handling
+
+The program automatically retries on temporary issues such as API errors or network errors. The number of retries and the interval can be configured in the configuration file. Exponential backoff is used to gradually increase the retry interval.
+
+---
+
+# Parallel OpenAI
+
 このサンプルプログラムは、OpenAIへの並行問い合わせを行うためのツールです。非同期処理とバッチ処理を使用して、複数の問い合わせを効率的に処理します。
 
 ## 機能

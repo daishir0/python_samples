@@ -1,3 +1,201 @@
+# Sample Programs Collection
+
+This directory contains various sample programs implementing different functionalities. Below is an overview and usage instructions for each sample program.
+
+## Table of Contents
+
+1. [Claude Prompt](#claude-prompt)
+2. [OpenAI Prompt](#openai-prompt)
+3. [Parallel OpenAI](#parallel-openai)
+4. [OpenAI Vision](#openai-vision)
+5. [Selenium](#selenium)
+
+## Claude Prompt
+
+### Overview
+
+A command-line tool for querying Claude. It uses the Anthropic API to interact with Claude models and retrieve responses in text or JSON format.
+
+### Key Features
+
+- Load prompts from command-line arguments or files
+- Set system prompts
+- Output as text or JSON
+- Automatic retry on errors
+
+### Usage
+
+```bash
+# Specify a prompt directly
+python main.py "Who are you?"
+
+# Load a prompt from a file
+python main.py -f sample_prompt.txt
+
+# Specify a system prompt
+python main.py -s "You are a Japanese language expert" "Explain what 'AI' is"
+
+# Output as JSON
+python main.py -j -f sample_json_prompt.txt
+
+# Specify an output file
+python main.py -o output.txt "What is your name?"
+```
+
+## OpenAI Prompt
+
+### Overview
+
+A command-line tool for querying OpenAI GPT models. It uses the OpenAI API to interact with GPT models and retrieve responses in text or JSON format.
+
+### Key Features
+
+- Load prompts from command-line arguments or files
+- Set system prompts
+- Output as text or JSON
+- Automatic retry on errors
+- Display usage information
+
+### Usage
+
+```bash
+# Specify a prompt directly
+python main.py "Who are you?"
+
+# Load a prompt from a file
+python main.py -f sample_prompt.txt
+
+# Specify a system prompt
+python main.py -s "You are a Japanese language expert" "Explain what 'AI' is"
+
+# Output as JSON
+python main.py -j -f sample_json_prompt.txt
+
+# Specify an output file
+python main.py -o output.txt "What is your name?"
+
+# Display usage information
+python main.py -u "I want to check token usage"
+```
+
+## Parallel OpenAI
+
+### Overview
+
+A sample program for making parallel queries to OpenAI. It uses asynchronous processing and batch processing to efficiently handle multiple queries.
+
+### Key Features
+
+- Process multiple queries in parallel
+- Batch processing for efficiency
+- Cache functionality for improved performance
+- Automatic retry on errors
+- Result aggregation and management
+
+### Usage
+
+```bash
+# Single query
+python -m parallel_openai.main query "What is the capital of Japan?"
+
+# Batch queries from a file
+python -m parallel_openai.main batch queries.txt
+
+# Interactive mode
+python -m parallel_openai.main interactive
+
+# Specify a model
+python -m parallel_openai.main query "Explain quantum computing" --model gpt-4o-mini
+
+# Disable cache
+python -m parallel_openai.main query "What is AI?" --no-cache
+
+# Specify batch size
+python -m parallel_openai.main batch queries.txt --batch-size 3
+```
+
+## OpenAI Vision
+
+### Overview
+
+A tool for image analysis using the OpenAI Vision API. It analyzes single or multiple images and outputs results in text, JSON, or Markdown format.
+
+### Key Features
+
+- Analyze single or multiple images
+- Load images from files, URLs, or directories
+- Batch processing for efficiency
+- Cache functionality for improved performance
+- Output results in various formats (text, JSON, Markdown)
+
+### Usage
+
+```bash
+# Analyze a single image
+python main.py path/to/image.jpg
+
+# Specify a prompt
+python main.py path/to/image.jpg -p "What animal is in this image?"
+
+# Specify output format
+python main.py path/to/image.jpg -f json
+
+# Specify output file
+python main.py path/to/image.jpg -o results.txt
+
+# Analyze images in a directory
+python main.py -d path/to/images/
+
+# Search directories recursively
+python main.py -d path/to/images/ -r
+
+# Specify batch size
+python main.py -d path/to/images/ -b 3
+```
+
+## Selenium
+
+### Overview
+
+A tool that uses Chrome WebDriver to access web pages and provides features such as retrieving page source after JavaScript execution.
+
+### Key Features
+
+- Access specified URLs and retrieve page information
+- Get page source after JavaScript execution
+- Take screenshots
+- Extract data from pages
+- Run in interactive mode
+
+### Usage
+
+```bash
+# Run with a specified URL
+python main.py https://example.com
+
+# Run in interactive mode
+python main.py
+
+# Specify output directory
+python main.py https://example.com --output custom_output
+
+# Enable debug mode
+python main.py https://example.com --debug
+```
+
+## Common Requirements
+
+To run each sample program, you need to install the packages listed in the `requirements.txt` file in each directory.
+
+```bash
+cd <sample_directory>
+pip install -r requirements.txt
+```
+
+Also, if API keys or other settings are required, copy the `.env.sample` file in each directory to `.env` and set the necessary information.
+
+---
+
 # サンプルプログラム集
 
 このディレクトリには、様々な機能を実装したサンプルプログラムが含まれています。各サンプルプログラムの概要と使い方を以下に示します。
@@ -75,7 +273,7 @@ python main.py -j -f sample_json_prompt.txt
 python main.py -o output.txt "あなたの名前は？"
 
 # 使用量情報を表示
-python main.py -u "短い文章を書いてください"
+python main.py -u "トークン使用量を確認したい"
 ```
 
 ## Parallel OpenAI

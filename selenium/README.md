@@ -1,3 +1,156 @@
+# Selenium Sample Program
+
+This sample program is a tool that uses Chrome WebDriver to access web pages and provides features such as retrieving page source after JavaScript execution.
+
+## Features
+
+- Access specified URLs and retrieve page information
+- Get page source after JavaScript execution
+- Take screenshots
+- Extract data from pages
+- Run in interactive mode
+- Automatic retry on errors
+
+## Requirements
+
+- Python 3.7 or higher
+- Chrome browser
+- ChromeDriver
+- Required packages (listed in requirements.txt)
+
+## Installation
+
+1. Install the required packages:
+
+```bash
+pip install -r requirements.txt
+```
+
+2. Install Chrome browser (if not already installed).
+
+3. Download ChromeDriver and place it in an appropriate location. The ChromeDriver version must match your installed Chrome version.
+
+4. Edit the `config.py` file to set the Chrome binary path and ChromeDriver path:
+
+```python
+# Chrome settings
+CHROME_BINARY_PATH = "/path/to/chrome"  # Path to Chrome binary
+CHROME_DRIVER_PATH = "/path/to/chromedriver"  # Path to ChromeDriver
+```
+
+## Usage
+
+### Basic Usage
+
+```bash
+# Run with a specified URL
+python main.py https://example.com
+
+# Run in interactive mode (when no URL is specified)
+python main.py
+```
+
+### Options
+
+```bash
+# Specify output directory
+python main.py https://example.com --output custom_output
+
+# Enable debug mode
+python main.py https://example.com --debug
+```
+
+### Interactive Mode
+
+In interactive mode, you'll be prompted to enter URLs, which will be processed one at a time. Type "exit" or "quit" to end the session.
+
+Interactive mode provides the following features:
+
+- URL input and validation
+- Page processing and result display
+- Retry option on error
+
+## File Structure
+
+- `main.py` - Main program
+- `selenium_utils.py` - Selenium utility functions
+- `config.py` - Configuration file
+- `requirements.txt` - List of required packages
+
+## Selenium Utilities
+
+The `selenium_utils.py` module provides the following features:
+
+### WebDriver Setup
+
+```python
+driver, temp_dir = setup_driver()
+```
+
+Initializes Chrome WebDriver and creates a temporary directory. Runs in headless mode with various options set.
+
+### Page Loading
+
+```python
+success = load_page_with_retry(driver, url)
+```
+
+Accesses the specified URL and attempts to load the page. Retries a specified number of times if it fails.
+
+### Element Waiting
+
+```python
+element = wait_for_element(driver, By.ID, "element-id")
+```
+
+Waits for the specified element to be displayed. Returns None if it times out.
+
+### Get Page Source After JavaScript Execution
+
+```python
+page_source = get_page_source_after_js(driver)
+```
+
+Gets the page source after JavaScript execution.
+
+### Safe Element Click
+
+```python
+success = safe_click(driver, element)
+```
+
+Safely clicks an element. If the normal click fails, it attempts to click using JavaScript.
+
+### Take Screenshot
+
+```python
+success = take_screenshot(driver, "screenshot.png")
+```
+
+Takes a screenshot and saves it.
+
+## Error Handling
+
+This program automatically retries on page loading errors and WebDriver-related errors. The number of retries and the interval can be configured in `config.py`.
+
+## Output
+
+The program generates the following outputs:
+
+1. Page HTML source (after JavaScript execution)
+2. Screenshot
+3. Extracted data (headings, meta descriptions, link count, etc.)
+
+Output files are saved in the `output` directory by default. Filenames include the domain name, path, and timestamp.
+
+## Notes
+
+- This program runs Chrome in headless mode. If you need a GUI, remove the `--headless=new` option from the `setup_driver` function in `selenium_utils.py`.
+- Some websites may restrict access due to bot detection features.
+- Sending a large number of requests in a short time may result in your IP being blocked.
+
+---
+
 # Selenium サンプルプログラム
 
 このサンプルプログラムは、Chrome WebDriverを使用してWebページにアクセスし、JavaScriptが実行された後のページソースを取得するなどの機能を提供するツールです。

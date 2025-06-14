@@ -1,3 +1,157 @@
+# OpenAI Prompt Tool
+
+This sample program is a command-line tool for querying OpenAI GPT models. It uses the OpenAI API to interact with GPT models and retrieve responses in text or JSON format.
+
+## Features
+
+- Load prompts from command-line arguments or files
+- Read prompts from standard input
+- Set system prompts
+- Specify the model to use
+- Adjust temperature parameter
+- Set maximum token count
+- Output as text or JSON
+- Save output to files
+- Automatic retry on errors
+- Display usage information
+
+## Requirements
+
+- Python 3.7 or higher
+- OpenAI API key
+
+## Installation
+
+1. Install the required packages:
+
+```bash
+pip install -r requirements.txt
+```
+
+2. Copy the `.env.sample` file to `.env` and set your OpenAI API key:
+
+```bash
+cp .env.sample .env
+```
+
+Edit the `.env` file to set your API key:
+
+```
+OPENAI_API_KEY=your_api_key_here
+DEBUG=False
+```
+
+## Usage
+
+### Basic Usage
+
+```bash
+# Specify a prompt directly
+python main.py "Who are you?"
+
+# Load a prompt from a file
+python main.py -f sample_prompt.txt
+
+# Read a prompt from standard input
+echo "Who are you?" | python main.py
+```
+
+### Options
+
+```bash
+# Specify a system prompt
+python main.py -s "You are a Japanese language expert" "Explain what 'AI' is"
+
+# Specify a model
+python main.py -m gpt-4o "Explain quantum computing"
+
+# Adjust the temperature parameter
+python main.py -t 0.5 "Write a creative story"
+
+# Set maximum token count
+python main.py -x 500 "Write a short story"
+
+# Output as JSON
+python main.py -j -f sample_json_prompt.txt
+
+# Specify an output file
+python main.py -o output.txt "What is your name?"
+
+# Enable verbose logging
+python main.py -v "I want to see debug information"
+
+# Display usage information
+python main.py -u "I want to check token usage"
+```
+
+## File Structure
+
+- `main.py` - Main program
+- `openai_client.py` - OpenAI client class
+- `config.py` - Configuration file
+- `requirements.txt` - List of required packages
+- `sample_prompt.txt` - Sample prompt
+- `sample_json_prompt.txt` - Sample prompt for JSON response
+- `.env.sample` - Sample environment variables file
+
+## Sample Prompts
+
+### Text Prompt (sample_prompt.txt)
+
+```
+Please answer the following questions in Japanese.
+
+1. Who are you?
+2. What features do you have?
+3. How were you trained?
+
+Please provide your answers in bullet points, concisely.
+```
+
+### JSON Prompt (sample_json_prompt.txt)
+
+```
+Please return the following information in JSON format.
+
+Name: Taro Yamada
+Age: 35
+Occupation: Software Engineer
+Skills: 
+  - Python
+  - JavaScript
+  - Docker
+  - AWS
+Hobbies:
+  - Reading
+  - Travel
+  - Cooking
+
+Please format the JSON as follows:
+{
+  "name": "name",
+  "age": age,
+  "occupation": "occupation",
+  "skills": ["skill1", "skill2", ...],
+  "hobbies": ["hobby1", "hobby2", ...]
+}
+```
+
+## Error Handling
+
+This tool automatically retries on temporary issues such as API errors or network errors. The number of retries and the interval can be configured in `config.py`. A backoff factor is used to gradually increase the retry interval.
+
+## Usage Information
+
+Using the `-u` or `--usage` option displays token usage information for the API request. This includes:
+
+- Prompt token count
+- Completion token count
+- Total token count
+
+This information is useful for monitoring API usage and managing costs.
+
+---
+
 # OpenAI Prompt ツール
 
 このサンプルプログラムは、コマンドラインからOpenAI GPTモデルに問い合わせを行うツールです。OpenAI APIを使用してGPTモデルと対話し、テキストまたはJSON形式でレスポンスを取得します。
