@@ -1,0 +1,44 @@
+# OpenAI Vision API サンプルプログラム - 設定ファイルサンプル
+# このファイルを config.yaml にコピーして、適切な値を設定してください
+
+# OpenAI API設定
+openai:
+  # APIキー（必須）- 環境変数OPENAI_API_KEYが設定されている場合は省略可能
+  api_key: "your_api_key_here"
+  
+  # 使用するモデル
+  model: "gpt-4o-mini"
+  
+  # 生成する最大トークン数
+  max_tokens: 1000
+  
+  # 生成の多様性（0.0～2.0）
+  temperature: 0.7
+  
+  # APIリクエストのタイムアウト秒数
+  timeout: 30
+  
+  # エラー時の再試行回数
+  retry_count: 3
+  
+  # 再試行間の待機秒数
+  retry_delay: 2
+
+# キャッシュ設定
+cache:
+  # キャッシュを有効にするかどうか
+  enabled: true
+  
+  # キャッシュディレクトリ
+  directory: "cache"
+  
+  # キャッシュの有効期限（日数）
+  expiry_days: 7
+
+# ロギング設定
+logging:
+  # ロギングレベル（DEBUG, INFO, WARNING, ERROR, CRITICAL）
+  level: "INFO"
+  
+  # ログファイル（省略時は標準出力のみ）
+  file: null

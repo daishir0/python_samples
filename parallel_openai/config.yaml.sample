@@ -1,0 +1,30 @@
+# OpenAI 並行問い合わせサンプル 設定ファイル
+# ==========================================
+#
+# このファイルは設定ファイルのサンプルです。
+# 実際に使用する場合は、このファイルを「config.yaml」にコピーし、
+# OpenAI APIキーを設定してください。
+#
+# 設定項目:
+# - api_key: OpenAI APIキー（https://platform.openai.com/api-keysから取得）
+# - model: 使用するOpenAIのモデル
+#   推奨モデル: gpt-4o-mini, gpt-4o, gpt-3.5-turbo
+#
+# 注意: APIキーは機密情報です。このファイルをバージョン管理システムにコミットする場合は、
+#      APIキーを環境変数から読み込むなどの方法で保護してください。
+
+openai:
+  api_key: "your-api-key-here"  # OpenAI APIキーを設定してください
+  model: "gpt-4o-mini"  # 使用するモデル
+
+# 並行処理の設定
+parallel:
+  batch_size: 5  # 同時に処理するリクエストの数
+  max_retries: 3  # エラー時の最大リトライ回数
+  retry_delay: 1  # リトライ間の待機時間（秒）
+
+# キャッシュの設定
+cache:
+  enabled: true  # キャッシュを使用するかどうか
+  directory: "cache"  # キャッシュディレクトリのパス
+  expiry_days: 7  # キャッシュの有効期限（日数）
