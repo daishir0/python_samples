@@ -238,6 +238,22 @@ class WordPressPoster:
         logger.info(f"記事を更新中: ID={post_id}, タイトル={article.get('title', '(タイトル未指定)')}")
         
         try:
+            # 既存記事の情報を取得
+            existing_article = self.get_article(post_id)
+            if not existing_article:
+                logger.error(f"記事ID {post_id} の取得に失敗しました")
+                return None
+            
+            # カテゴリが指定されていない場合は既存のカテゴリを保持
+            if 'category_id' not in article:
+                existing_categories = existing_article.get('categories', [])
+                if existing_categories:
+                    article['category_id'] = existing_categories[0]
+                    logger.info(f"既存のカテゴリID {existing_categories[0]} を保持します")
+                else:
+                    article['category_id'] = self.default_category_id
+                    logger.info(f"既存カテゴリが見つからないため、デフォルトカテゴリID {self.default_category_id} を使用します")
+            
             # 更新データを準備
             update_data = self._prepare_post_data(article)
             
