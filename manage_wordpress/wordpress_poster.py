@@ -10,6 +10,7 @@ WordPress REST APIを使用して記事を投稿する機能を提供します�
 import logging
 import requests
 import time
+import re
 from requests.auth import HTTPBasicAuth
 from typing import Dict, Any, Optional, List
 
@@ -145,9 +146,12 @@ class WordPressPoster:
         if 'tags' not in article and 'default_tags' in self.config.get('tags', {}):
             tags = self.config['tags']['default_tags']
         
+        # Markdownリンクを自動でHTMLに変換
+        content_html = self._convert_markdown_links_to_html(article['content'])
+        
         post_data = {
             'title': article['title'],
-            'content': article['content'],
+            'content': content_html,
             'status': article.get('status', 'publish'),
             'slug': slug,
             'categories': category_ids
@@ -400,6 +404,29 @@ class WordPressPoster:
         except requests.exceptions.RequestException as e:
             logger.error(f"記事検索エラー: {e}")
             return []
+    
+    def _convert_markdown_links_to_html(self, content: str) -> str:
+        """
+        MarkdownのリンクをHTMLのaタグに変換する（リンクのみ）
+        
+        Args:
+            content: Markdown形式のコンテンツ
+            
+        Returns:
+            リンクのみHTMLに変換されたコンテンツ
+        """
+        # [テキスト](URL) → <a href="URL">テキスト</a> に変換
+        def replace_link(match):
+            text = match.group(1)
+            url = match.group(2)
+            return f'<a href="{url}" target="_blank">{text}</a>'
+        
+        # Markdownリンクパターンをマッチして変換
+        link_pattern = r'\[([^\]]+)\]\(([^)]+)\)'
+        content = re.sub(link_pattern, replace_link, content)
+        
+        logger.info("Markdownリンクのみをaタグに変換完了")
+        return content
 
 def test_wordpress_connection(config: Dict[str, Any]) -> bool:
     """
