@@ -182,18 +182,36 @@ def process_url(url: str) -> Dict[str, Any]:
         driver, temp_dir = setup_driver()
         
         # ページにアクセス
-        if not load_page_with_retry(driver, url):
-            result["error"] = "ページの読み込みに失敗しました"
-            return result
+        load_success, partial_html_available = load_page_with_retry(driver, url)
+        
+        if not load_success:
+            if not partial_html_available:
+                result["error"] = "ページの読み込みに完全に失敗しました"
+                return result
+            else:
+                # 部分的なHTMLが取得できた場合は処理を続行
+                result["error"] = "ページの読み込みは完了しませんでしたが、部分的なHTMLを取得しました"
+                logger.warning("ページの読み込みは完了しませんでしたが、部分的なHTMLを取得しました")
         
         # ページのタイトルを取得
         result["title"] = driver.title
         
         # JavaScriptの実行後にページソースを取得
-        page_source = get_page_source_after_js(driver)
+        # タイムアウトが発生した場合でも、driver.page_sourceで部分的なHTMLを取得できる
+        try:
+            page_source = get_page_source_after_js(driver)
+        except Exception as e:
+            logger.warning(f"JavaScriptの実行後のページソース取得に失敗しました: {e}")
+            # エラーが発生しても部分的なHTMLを取得
+            page_source = driver.page_source
+            logger.info("部分的なHTMLを取得しました")
         
         # ページの内容を保存
-        result["content_file"] = save_page_content(page_source, url)
+        if page_source:
+            result["content_file"] = save_page_content(page_source, url)
+            # 部分的なHTMLの場合でも成功とみなす
+            if not load_success and partial_html_available:
+                result["success"] = True
         
         # スクリーンショットを撮影
         screenshot_filename = os.path.splitext(result["content_file"])[0] + ".png"

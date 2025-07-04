@@ -114,34 +114,55 @@ def cleanup_temp_dir(temp_dir: str) -> None:
         logger.warning(f"一時ディレクトリの削除に失敗しました: {e}")
 
 
-def load_page_with_retry(driver: webdriver.Chrome, url: str) -> bool:
+def load_page_with_retry(driver: webdriver.Chrome, url: str) -> Tuple[bool, bool]:
     """
     指定されたURLにアクセスし、ページの読み込みを試みます。
     失敗した場合は指定回数リトライします。
+    タイムアウトが発生した場合でも部分的なHTMLを取得できる場合があります。
     
     Args:
         driver (webdriver.Chrome): WebDriverインスタンス
         url (str): アクセスするURL
     
     Returns:
-        bool: 成功した場合はTrue、失敗した場合はFalse
+        Tuple[bool, bool]: (成功したかどうか, 部分的なHTMLが取得できたかどうか)
     """
+    partial_html_available = False
+    
     for attempt in range(MAX_RETRIES):
         try:
             logger.info(f"ページにアクセスしています: {url} (試行 {attempt + 1}/{MAX_RETRIES})")
-            driver.get(url)
             
-            # ページが完全に読み込まれるまで待機
-            WebDriverWait(driver, PAGE_LOAD_TIMEOUT).until(
-                lambda d: d.execute_script('return document.readyState') == 'complete'
-            )
-            
-            logger.info(f"ページの読み込みに成功しました: {url}")
-            return True
+            # try-except-finallyブロックを使用してdriver.getを実行
+            try:
+                driver.get(url)
+                
+                # ページが完全に読み込まれるまで待機
+                WebDriverWait(driver, PAGE_LOAD_TIMEOUT).until(
+                    lambda d: d.execute_script('return document.readyState') == 'complete'
+                )
+                
+                logger.info(f"ページの読み込みに成功しました: {url}")
+                return True, True  # 完全に成功
+            except TimeoutException as e:
+                logger.warning(f"ページの読み込みがタイムアウトしました: {url}")
+                # タイムアウトが発生しても、部分的なHTMLが取得できる可能性がある
+                if driver.page_source and len(driver.page_source) > 100:  # 最低限のHTMLがあるか確認
+                    logger.info("タイムアウトが発生しましたが、部分的なHTMLを取得しました")
+                    partial_html_available = True
+                raise e  # 例外を再度発生させて外側のcatchブロックで処理
+            except Exception as e:
+                logger.error(f"ページの読み込み中にエラーが発生しました: {e}")
+                # その他のエラーでも部分的なHTMLが取得できる可能性がある
+                if driver.page_source and len(driver.page_source) > 100:
+                    logger.info("エラーが発生しましたが、部分的なHTMLを取得しました")
+                    partial_html_available = True
+                raise e
         except TimeoutException:
-            logger.warning(f"ページの読み込みがタイムアウトしました: {url}")
+            # すでに内側のtry-exceptで処理済み
+            pass
         except WebDriverException as e:
-            logger.error(f"ページの読み込み中にエラーが発生しました: {e}")
+            logger.error(f"ページの読み込み中にWebDriverエラーが発生しました: {e}")
         
         # 最後の試行でなければ待機してリトライ
         if attempt < MAX_RETRIES - 1:
@@ -149,7 +170,10 @@ def load_page_with_retry(driver: webdriver.Chrome, url: str) -> bool:
             time.sleep(RETRY_DELAY)
     
     logger.error(f"ページの読み込みに失敗しました（{MAX_RETRIES}回試行）: {url}")
-    return False
+    if partial_html_available:
+        logger.info("ただし、部分的なHTMLは取得できています")
+    
+    return False, partial_html_available
 
 
 def wait_for_element(driver: webdriver.Chrome, by: By, value: str, timeout: int = None) -> Optional[webdriver.remote.webelement.WebElement]:
