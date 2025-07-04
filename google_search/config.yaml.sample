@@ -1,0 +1,5 @@
+# Google検索設定
+api_key: "YOUR_GOOGLE_API_KEY_HERE"
+cx: "YOUR_SEARCH_ENGINE_ID_HERE"
+output_dir: "/path/to/output/directory"
+num_results: 100
