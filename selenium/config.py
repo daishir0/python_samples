@@ -13,7 +13,7 @@ load_dotenv()
 
 # Chrome WebDriverの設定
 CHROME_BINARY_PATH = os.getenv('CHROME_BINARY_PATH', '/usr/bin/google-chrome')
-CHROME_DRIVER_PATH = os.getenv('CHROME_DRIVER_PATH', '/usr/local/bin/chromedriver')
+CHROME_DRIVER_PATH = os.getenv('CHROME_DRIVER_PATH', '/usr/bin/chromedriver')
 
 # APIキーの設定
 API_KEY = os.getenv('API_KEY', '')
